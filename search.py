@@ -87,50 +87,30 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    print "Start: ", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    #How to define left most node of graph/tree?
-    #Need to keep track of the fringe/already expanded states
-    #Given state, check if current state is goal
-    #If not, check successors
-    #    Somehow determine one successor, push direction onto stack, recurse
-    #    between the possible successors
-    #    If no unique successors left, pop last direction off stack
-    #If yes, return stack
-
     #Successor in the form of: [((x, y), 'Direction', 'Cost'), ...]
-    print "S successors:", problem.getSuccessors((5, 4))
-    print "W successors:", problem.getSuccessors((4, 5))
-    from game import Directions
-    n = Directions.NORTH
-    s = Directions.SOUTH
-    e = Directions.EAST
-    w = Directions.WEST
-    #probably don't need to recurse, but here just for now
-    #Need to change something into a pointer for tail recursion
-    actions = []
-    #dfsHelper(problem, problem.getStartState(), actions)
-    #return actions
-    util.raiseNotDefined()
+
+    #Should try to use stack instead of default list
+    #though it won't make a difference due to the way this recursion works
+    visited, actions = set(), []
+    start = (problem.getStartState(), None, 0)
+    actions = dfsHelper(problem, start, visited, actions)
+    return actions
 
 #Should keep track of already expanded states
-def dfsHelper(problem, currentState, actions):
-    from game import Directions
-    #Found solution base case
-    if problem.isGoalState(currentState):
-        return true
-    else:
-        #Check successors
-        successors = problem.getSuccessors(currentState)
-        for state in successors:
-            #Need to check if state is not already expanded
-            #Can just append "North" instead of Directions.NORTH?
-            actions.append(state[1])
-            if dfsHelper(problem, state[0], actions):
-                return true
-            actions.pop()
-        return false
+def dfsHelper(problem, currentState, visited, actions):
+    visited.add(currentState[0])
+    if problem.isGoalState(currentState[0]):
+        actions.append(currentState[1])
+        return actions
+    successors = problem.getSuccessors(currentState[0])
+    for s in successors:
+        if s[0] not in visited:
+            possiblePath = list(actions)
+            possiblePath.append(s[1])
+            path = dfsHelper(problem, s, visited, possiblePath)
+            if path is not None:
+                return path
+    return None
     
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
