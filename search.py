@@ -100,7 +100,7 @@ def depthFirstSearch(problem):
 def dfsHelper(problem, currentState, visited, actions):
     visited.add(currentState[0])
     if problem.isGoalState(currentState[0]):
-        actions.append(currentState[1])
+        #actions.append(currentState[1])
         return actions
     successors = problem.getSuccessors(currentState[0])
     for s in successors:
@@ -115,7 +115,25 @@ def dfsHelper(problem, currentState, visited, actions):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    visited, fringe = set(), util.Queue()
+    start = (problem.getStartState(), None, 0)
+    visited.add(problem.getStartState())
+    fringe.push((start, [])) 
+    while not fringe.isEmpty():
+        item = fringe.pop()
+        currentState = item[0]
+        actions = item[1]
+        if problem.isGoalState(currentState[0]):
+            return actions
+        successors = problem.getSuccessors(currentState[0])
+        for s in successors:
+            if s[0] not in visited:
+                visited.add(s[0])
+                possiblePath = list(actions)
+                possiblePath.append(s[1])
+                fringe.push((s, possiblePath))
+    return actions
+    #util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
