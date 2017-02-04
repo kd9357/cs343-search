@@ -464,7 +464,21 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    #Return the longest distance food from pacman's current position
+    h = 0
+    foodList = foodGrid.asList()
+    gameState = problem.startingGameState
+    for f in foodList:
+        coords = (position, f)
+        #Use a dictionary to cache already calculated distances
+        if problem.heuristicInfo.has_key(coords):
+            distance = problem.heuristicInfo[coords]
+        else:
+            distance = mazeDistance(position, f, gameState)
+            problem.heuristicInfo[coords] = distance
+        if distance > h:
+            h = distance
+    return h
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -495,7 +509,8 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #Use bfs to look for the closest dot
+        return search.bfs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -531,7 +546,9 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        food = self.food.asList()
+        #Goal if our position is at a dot
+        return (x, y) in food
 
 def mazeDistance(point1, point2, gameState):
     """
