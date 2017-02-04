@@ -105,8 +105,7 @@ def dfsHelper(problem, currentState, visited, actions):
     successors = problem.getSuccessors(currentState[0])
     for s in successors:
         if s[0] not in visited:
-            possiblePath = list(actions)
-            possiblePath.append(s[1])
+            possiblePath = actions + [s[1]]
             path = dfsHelper(problem, s, visited, possiblePath)
             if path is not None:
                 return path
@@ -115,9 +114,11 @@ def dfsHelper(problem, currentState, visited, actions):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    visited, fringe = set(), util.Queue()
+    # Because of cornersProblem and using a list to keep
+    # track of hit corners, can no longer use set for visited
+    visited, fringe = [], util.Queue()
     start = (problem.getStartState(), None, 0)
-    visited.add(problem.getStartState())
+    visited.append(problem.getStartState())
     fringe.push((start, [])) 
     while not fringe.isEmpty():
         (currentState, actions) = fringe.pop()
@@ -126,9 +127,8 @@ def breadthFirstSearch(problem):
         successors = problem.getSuccessors(currentState[0])
         for s in successors:
             if s[0] not in visited:
-                visited.add(s[0])
-                possiblePath = list(actions)
-                possiblePath.append(s[1])
+                visited.append(s[0])
+                possiblePath = actions + [s[1]]
                 fringe.push((s, possiblePath))
     return None
 
@@ -149,8 +149,7 @@ def uniformCostSearch(problem):
             possibleCost = cost + s[2]
             if not visited.has_key(s[0]) or possibleCost < visited[s[0]]:
                 visited[s[0]] = possibleCost
-                possiblePath = list(actions)
-                possiblePath.append(s[1])
+                possiblePath = actions + [s[1]]
                 fringe.update((s, possiblePath), possibleCost)
     return None
 
@@ -180,11 +179,9 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             totalScore = g + h
             if not visited.has_key(s[0]) or g < visited[s[0]]:
                 visited[s[0]] = g
-                possiblePath = list(actions)
-                possiblePath.append(s[1])
+                possiblePath = actions + [s[1]]
                 fringe.update((s, possiblePath), totalScore)
     return None
-    #util.raiseNotDefined()
 
 
 # Abbreviations
